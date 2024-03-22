@@ -4,27 +4,44 @@
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
-  // provider = "sqlite"
-  // url      = "file:./dev.db"
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-enum PosterSource {
-  RAW
-  GITHUB
+enum ElectionType {
+  PRESIDENTIAL
+  PARLIAMENTARY
 }
 
-model Post {
-  id     String       @id @default(uuid())
-  name   String
-  text   String
-  source PosterSource @default(RAW)
+model Country {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  isoCode   String     @unique
+  elections Election[]
+}
 
-  // To return `Date`s intact through the API we need to add data transformers
-  // https://trpc.io/docs/v11/data-transformers
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @unique @default(now())
+model Election {
+  id         String           @id @default(uuid())
+  countryId  String
+  date       DateTime
+  pollClose  DateTime
+  type       ElectionType
+  notes      String? // specific details
+  eta        String? // optional information about first results
+  dataSource String // governmental office or bureau
+  dataUrl    String
+  country    Country          @relation(fields: [countryId], references: [id])
+  results    ElectionResult[]
+}
+
+model ElectionResult {
+  id         String   @id @default(uuid())
+  electionId String
+  candidate  String? // Relevant for Presidential elections, might be null for Parliamentary
+  party      String? // Relevant for Parliamentary elections, might be null for Presidential
+  votes      Int
+  percentage Float? // Optional, as not all results will have a percentage
+  election   Election @relation(fields: [electionId], references: [id])
 }
