@@ -15,9 +15,17 @@ This is a full-stack React application built with Next.js, Prisma, and tRPC with
   - ✅ E2E testing with [Playwright](https://playwright.dev/)
   - ✅ Linting
 
+## Requirements
+
+This project uses [Node.js](https://nodejs.org/en) and [PNPM](https://pnpm.io).
+
+It also requires a local PostgreSQL database for development, which Prisma will use to create, migrate and read from a schema.
+
 ## Getting Started
 
-First, install the dependencies:
+Before you begin, `cp .env .env.local` in the project and adjust the connection string to match your local PostgreSQL setup, e.g. `DATABASE_URL="postgresql://<YOUR_USER>:<YOUR_PASSWORD>@localhost:5432..."`, making sure these credentials allow you to create and modify databases.
+
+Next, install the dependencies:
 
 ```sh
 pnpm install
